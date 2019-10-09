@@ -6,3 +6,14 @@ One area where there is an opportunity for real-life players to beat the odds he
 
 There aren't any parameters to the code at this time, so you will need to modify `main` to change the number of players or iterations.
 
+## Results (on my laptop):
+
+```
+100000 matches in 4627.063ms (0.046ms/match)
+Player 0: 17670 wins (17.67%)
+Player 1: 17753 wins (17.75%)
+Player 2: 17346 wins (17.35%)
+Player 3: 16908 wins (16.91%)
+Player 4: 15624 wins (15.62%)
+Player 5: 14699 wins (14.70%)
+```
