@@ -64,8 +64,10 @@ func appMain(c *cli.Context) error {
 	for wIx := 0; wIx < workers; wIx++ {
 		wg.Add(1)
 		go func(wIx int) {
-			defer wg.Done()
 			var winner int
+			// we're going to gather results into a local slice, only updating
+			// the shared slice when we're done. That avoid excessive churn on
+			// the lock.
 			localWins := make([]uint, len(wins))
 			for i := wIx; i < iterations; i += workers {
 				winner, games[i], turns[i] = match(len(wins))
@@ -76,6 +78,7 @@ func appMain(c *cli.Context) error {
 				wins[i] += localWins[i]
 			}
 			winLock.Unlock()
+			wg.Done()
 		}(wIx)
 	}
 	wg.Wait()
@@ -110,23 +113,23 @@ func match(numPlayers int) (winner int, games int, turns int) {
 	return i, games, turns
 }
 
-func print(a ...interface{}) (n int, err error) {
+func print(a ...interface{}) {
 	if !verbose {
-		return 0, nil
+		return
 	}
-	return fmt.Print(a...)
+	fmt.Print(a...)
 }
 
-func println(a ...interface{}) (n int, err error) {
+func println(a ...interface{}) {
 	if !verbose {
-		return 0, nil
+		return
 	}
-	return fmt.Println(a...)
+	fmt.Println(a...)
 }
 
-func printf(format string, a ...interface{}) (n int, err error) {
+func printf(format string, a ...interface{}) {
 	if !verbose {
-		return 0, nil
+		return
 	}
-	return fmt.Printf(format, a...)
+	fmt.Printf(format, a...)
 }

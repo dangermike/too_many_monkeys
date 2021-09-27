@@ -4,11 +4,9 @@ This is a simulation of the game [Too Many Monkeys](https://gamewright.com/produ
 
 One area where there is an opportunity for real-life players to beat the odds here is in ganging up -- Sending all the negative cards to a single player. This simulation gives each player the same heuristic (number of showing cards) to determine which player poses the greatest threat. It is that player who gets negative cards. In my house, I am apparently perceived is the greatest threat because I seem to get the lion's share of the negative cards. I am, in fact, a lion, so perhaps that makes sense.
 
-There aren't any parameters to the code at this time, so you will need to modify `main` to change the number of players or iterations.
+## Results (on my laptop)
 
-## Results (on my laptop):
-
-```
+```text
 100000 matches in 4627.063ms (0.046ms/match)
 Player 0: 17670 wins (17.67%)
 Player 1: 17753 wins (17.75%)
