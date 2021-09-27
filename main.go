@@ -12,6 +12,8 @@ import (
 	"github.com/urfave/cli"
 )
 
+var verbose = false
+
 func playerPower(player *Player) int {
 	p := len(player.cards)
 	for _, card := range player.cards {
@@ -22,12 +24,28 @@ func playerPower(player *Player) int {
 	return p
 }
 
-const verbose = false
-
 func main() {
 	app := cli.NewApp()
 
 	app.Action = appMain
+
+	app.Flags = append(app.Flags,
+		cli.UintFlag{
+			Name:  "p, players",
+			Usage: "Number of players in the tournament",
+			Value: 6,
+		},
+		cli.UintFlag{
+			Name:  "g, games",
+			Usage: "Number of games to play",
+			Value: 100000,
+		},
+		cli.BoolFlag{
+			Name:        "v, verbose",
+			Usage:       "Verbose logging",
+			Destination: &verbose,
+		},
+	)
 
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
@@ -35,11 +53,11 @@ func main() {
 }
 
 func appMain(c *cli.Context) error {
-	iterations := 100000
+	iterations := c.Int("games")
 	workers := runtime.NumCPU()
 	games := make([]int, iterations)
 	turns := make([]int, iterations)
-	wins := make([]uint, 6)
+	wins := make([]uint, c.Int("players"))
 	var winLock sync.Mutex
 	var wg sync.WaitGroup
 	startTime := time.Now()
@@ -54,10 +72,10 @@ func appMain(c *cli.Context) error {
 				localWins[winner]++
 			}
 			winLock.Lock()
-			defer winLock.Unlock()
 			for i := 0; i < len(localWins); i++ {
 				wins[i] += localWins[i]
 			}
+			winLock.Unlock()
 		}(wIx)
 	}
 	wg.Wait()
